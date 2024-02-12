@@ -21,27 +21,27 @@ public partial class User
     [Unicode(false)]
     public string UserPassword { get; set; } = null!;
 
-    [StringLength(50)]
+    [StringLength(255)]
     [Unicode(false)]
     public string? FirstName { get; set; }
 
-    [StringLength(50)]
+    [StringLength(255)]
     [Unicode(false)]
     public string? LastName { get; set; }
 
-    [StringLength(10)]
+    [StringLength(255)]
     [Unicode(false)]
     public string? Gender { get; set; }
 
-    [StringLength(15)]
+    [StringLength(255)]
     [Unicode(false)]
     public string? Phone { get; set; }
 
-    [StringLength(50)]
+    [StringLength(255)]
     [Unicode(false)]
     public string? City { get; set; }
 
-    [StringLength(50)]
+    [StringLength(255)]
     [Unicode(false)]
     public string UserStatus { get; set; } = null!;
 

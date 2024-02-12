@@ -43,14 +43,15 @@ namespace MMCEventsV1.Controllers
 
                         UserResponseModel userResponseModel = new UserResponseModel
                         {
-                            UserID = user.UserId,
-                            FirstName = user.FirstName,
-                            LastName = user.LastName,
-                            UserEmail = user.UserEmail,
-                            Gender = user.Gender,
-                            City = user.City,
-                            UserStatus = user.UserStatus,
-                            Phone = user.Phone
+                            UserID = user?.UserId,
+                            FirstName = user?.FirstName,
+                            LastName = user?.LastName,
+                            UserEmail = user?.UserEmail,
+                            Gender = user?.Gender,
+                            UserPassword = user?.UserPassword,
+                            City = user?.City,
+                            UserStatus = user?.UserStatus,
+                            Phone = user?.Phone
                         };
 
                         userResponseList.Add(userResponseModel);
@@ -82,14 +83,15 @@ namespace MMCEventsV1.Controllers
 
                 UserResponseModel userResponseModel = new UserResponseModel
                 {
-                        UserID = user.UserId,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        UserEmail = user.UserEmail,
-                        Gender = user.Gender,
-                        City = user.City,
-                        UserStatus = user.UserStatus,
-                        Phone = user.Phone
+                        UserID = user?.UserId,
+                        FirstName = user?.FirstName,
+                        LastName = user?.LastName,
+                        UserEmail = user?.UserEmail,
+                        Gender = user?.Gender,
+                        City = user?.City,
+                        UserPassword = user?.UserPassword,
+                        UserStatus = user?.UserStatus,
+                        Phone = user?.Phone
                     };
 
                     userResponseList.Add(userResponseModel);
@@ -130,13 +132,13 @@ namespace MMCEventsV1.Controllers
         public async Task<IActionResult> AddUser([FromBody] AddUserModel inputModel)
         {
 
-            User user = new User
+            User user = new()
             {
                 FirstName = inputModel.FirstName,
                 LastName = inputModel.LastName,
-                UserEmail = inputModel.UserEmail,
-                UserPassword = inputModel.UserPassword,
-                Phone = inputModel.Phone,
+                UserEmail = inputModel?.UserEmail,
+                UserPassword = inputModel?.UserPassword,
+                Phone = inputModel?.Phone,
                 City = inputModel.City,
                 Gender = inputModel.Gender
 
