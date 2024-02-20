@@ -83,7 +83,7 @@ namespace MMCEventsV1.Controllers
                 EventID = ev.EventId,
                 Title = ev.Title,
                 Description = ev?.Description,
-                Picture = ev?.Description,
+                Picture = ev?.Picture,
                 StartDate = (DateTime)ev?.StartDate,
                 EndDate = (DateTime)ev?.EndDate
 

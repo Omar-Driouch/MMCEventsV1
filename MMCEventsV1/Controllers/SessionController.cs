@@ -85,32 +85,78 @@ namespace MMCEventsV1.Controllers
 
 
         //Get  Sessions by ID   // VERIFIED 
-        [HttpGet("{SessionID}")] 
-        public async Task<ActionResult<SessionResponseModel>> GetSessionByID(int SessionID)
-        {
-            try
-            {
-                var findSessionById= await _Session.Sessions.FindAsync(SessionID);
+        //[HttpGet("{SessionID}")] 
+        //public async Task<ActionResult<SessionResponseModel>> GetSessionByID(int SessionID)
+        //{
+        //    try
+        //    {
+        //        var findSessionById= await _Session.Sessions.FindAsync(SessionID);
 
-                if (findSessionById == null)
-                {
-                    return NotFound("Session Not Found ");
-                }
+        //        if (findSessionById == null)
+        //        {
+        //            return NotFound("Session Not Found ");
+        //        }
 
-                SessionResponseModel FoundSession = new SessionResponseModel
-                {
-                    SessionID= findSessionById.SessionId,
-                    Address = findSessionById.Address,
-                    Title = findSessionById.Title,
-                    DateSession = findSessionById.DateSession,
-                    Description = findSessionById.Description,
-                    Picture = findSessionById.Picture,
+        //        SessionResponseModel FoundSession = new SessionResponseModel
+        //        {
+        //            SessionID= findSessionById.SessionId,
+        //            Address = findSessionById.Address,
+        //            Title = findSessionById.Title,
+        //            DateSession = findSessionById.DateSession,
+        //            Description = findSessionById.Description,
+        //            Picture = findSessionById.Picture,
 
-                };
+        //        };
 
                  
 
-                return Ok(FoundSession);
+        //        return Ok(FoundSession);
+        //    }
+        //    catch (Exception err)
+        //    {
+
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while adding a new session." + err.Message);
+        //    }
+        //}
+        //Get  Sessions by ID   // VERIFIED 
+        [HttpGet("{EventID}")]
+        public async Task<ActionResult<SessionResponseModel>> GetSessionByEvent(int EventID)
+        {
+            try
+            {
+           
+                var findSessionById = await _Session.Sessions.Where(es => es.EventId== EventID).ToListAsync();
+                List<SessionResponseModel> ListSessions = new List<SessionResponseModel>();
+
+                if (findSessionById.Any())
+                {
+
+                    foreach (var item in findSessionById)
+                    {
+                        SessionResponseModel finds = new SessionResponseModel
+                        {
+                            SessionID = item.SessionId,
+                            Address = item.Address,
+                            Title = item.Title,
+                            DateSession = item.DateSession,
+                            Description = item.Description,
+                            Picture = item.Picture,
+
+                        };
+                        ListSessions.Add(finds);
+                    }
+
+                    return Ok(ListSessions);
+
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+ 
+
+              
             }
             catch (Exception err)
             {
@@ -118,6 +164,7 @@ namespace MMCEventsV1.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while adding a new session." + err.Message);
             }
         }
+
 
 
         // HttpPut: api/<SessionController> // Verified
