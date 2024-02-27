@@ -1,4 +1,5 @@
-﻿using MMCEventsV1.DTO.User;
+﻿using Microsoft.AspNetCore.Mvc;
+using MMCEventsV1.DTO.User;
 using MMCEventsV1.Repository.Models;
 
 namespace MMCEventsV1.Repository.Interfaces
@@ -13,11 +14,11 @@ namespace MMCEventsV1.Repository.Interfaces
         Task<bool> UpdateUserAsync(UserInputModel User);
         Task<bool> DeleteUserAsycn(int userID);
         Task<bool> SaveAsync();
-
-        bool loging(LoginRequest userlogin);
+        Task<string> LogIn(LoginRequest userLogin);
         bool logout();
+        
+        Task<UserResponseModel> GetOneUser(int? UserID);
 
-        bool Register(RegisterRequest registerRequest);
-       
+
     }
 }

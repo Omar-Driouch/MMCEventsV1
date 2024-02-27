@@ -29,10 +29,9 @@ namespace MMCEventsV1.Controllers
             _userRepository = userRepository;
         }
 
-
+        //Get All  Users Method ==>> VERIFIED
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<UserResponseModel>))] // VERIFIED
-        //[Authorize(Roles = "admin")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserResponseModel>))] 
         public IActionResult GetUsers()
         {
             var users = _userRepository.GetUsers();
@@ -48,12 +47,11 @@ namespace MMCEventsV1.Controllers
 
             return Ok(users);
         }
-
+        // POST Users Method ==>> Verified
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        //[Authorize(Roles = "admin")]
-        public async Task<IActionResult> CreateUserAsync(AddUserModel userCreate) //Verified
+        public async Task<IActionResult> CreateUserAsync(AddUserModel userCreate) 
         {
             var isUserExist = await _userRepository.UserExistAsync(userCreate.UserEmail);
             if (isUserExist == false)
@@ -73,8 +71,7 @@ namespace MMCEventsV1.Controllers
             }
 
         }
-
-
+        //UPDATE Users Method 
         [HttpPut("{UserID}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
@@ -88,11 +85,21 @@ namespace MMCEventsV1.Controllers
             else
             { return BadRequest("An error occured "); }
         }
-
-
-
-        // DELETE api/<UserController>/ Verified 
+        //GET ONE  BY UserID Method ==>> Verified 
+        [HttpGet("{UserID}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<UserResponseModel>> GetOneUser(int UserID)
+        {
+            var user = await _userRepository.GetOneUser(UserID);
+            if (user != null)
+            { return Ok(user);}
+            else
+            { return BadRequest(); }
+        }
+        // DELETE Users Method ==>> Verified 
         [HttpDelete("{UserID}")]
+        [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteUserAsycn(int UserID)
         {
             var check = await _userRepository.DeleteUserAsycn(UserID);
@@ -105,7 +112,19 @@ namespace MMCEventsV1.Controllers
 
         }
 
-
+        [HttpGet("Login")]
+        public async Task<ActionResult<string>> Login([FromQuery] LoginRequest userLogin)
+        {
+            try
+            {
+                var LoggedIn = await _userRepository.LogIn(userLogin);
+                return Ok(LoggedIn);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
 
 
     }

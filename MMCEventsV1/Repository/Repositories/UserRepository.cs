@@ -5,17 +5,22 @@ using MMCEventsV1.Repository.Models;
 using ScaffoldConcept.TestModels;
 using User = MMCEventsV1.Repository.Models.User;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MMCEventsV1.Repository.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        private readonly ILogger<UserRepository> _logger;
+
+        
 
         private readonly MMC_Event _Context;
         private string secretKey;
-        public UserRepository(MMC_Event context)
+        public UserRepository(MMC_Event context , ILogger<UserRepository> logger)
         {
             _Context = context;
+            _logger = logger;
             // secretKey = configuration.GetValue<string>("ApiSettings:Secret");
         }
         public ICollection<UserResponseModel> GetUsers()// VERIFIED
@@ -98,30 +103,53 @@ namespace MMCEventsV1.Repository.Repositories
             {
                 return false;
             }
-         
-
-    }
 
 
-    public bool IsUserUnique(string email)
+        }
+
+
+        public bool IsUserUnique(string email)
         {
             throw new NotImplementedException();
         }
 
-        public bool loging(LoginRequest userlogin)
+        public async Task<string> LogIn(LoginRequest userLogin)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Use await to asynchronously retrieve the user
+                var userExist = await _Context.Users.FirstOrDefaultAsync(user => user.UserEmail.Equals(userLogin.UserEmail));
+
+                if (userExist == null)
+                {
+                    return "User not found  ";
+                }
+
+                if (userExist.UserPassword == userLogin.UserPassword)
+                {
+                    return userExist.UserStatus;
+                }
+                else
+                {
+                    return "Password is incorrect";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging purposes
+                _logger.LogError(ex, "An error occurred during login.");
+                return "An error occurred during login. Please try again later.";
+            }
         }
+
+
+
 
         public bool logout()
         {
             throw new NotImplementedException();
         }
 
-        public bool Register(RegisterRequest registerRequest)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<bool> SaveAsync() //done
         {
@@ -167,7 +195,7 @@ namespace MMCEventsV1.Repository.Repositories
                 return false;
             }
         }
-        public async Task<bool> UserExistAsync(string? userEmail)
+        public async Task<bool> UserExistAsync(string? userEmail)//done
         {
             try
             {
@@ -189,8 +217,42 @@ namespace MMCEventsV1.Repository.Repositories
 
                 return true;
             }
-        }//done
+        }
+
+        public async Task<UserResponseModel> GetOneUser(int? UserID) //done
+        {
+            try
+            {
+                var user = await _Context.Users.FindAsync(UserID);
+                if (user == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    UserResponseModel responseUser = new();
+                    {
+                        responseUser.Gender = user?.Gender;
+                        responseUser.City = user.City;
+                        responseUser.UserStatus = user.UserStatus;
+                        responseUser.Phone = user.Phone;
+                        responseUser.FirstName = user.FirstName;
+                        responseUser.LastName = user.LastName;
+                        responseUser.UserEmail = user.UserEmail;
+                        responseUser.UserID = user.UserId;
+                    }
+                    return (responseUser);
+                }
 
 
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+         
     }
 }
