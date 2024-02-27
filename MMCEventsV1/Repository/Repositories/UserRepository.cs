@@ -80,9 +80,7 @@ namespace MMCEventsV1.Repository.Repositories
                 return false;
             }
         }
-
-
-        public async Task<bool> DeleteUserAsycn(int UserID)
+        public async Task<bool> DeleteUserAsycn(int UserID)//VERIFIED
         {
             try
             {
@@ -106,14 +104,7 @@ namespace MMCEventsV1.Repository.Repositories
 
 
         }
-
-
-        public bool IsUserUnique(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<string> LogIn(LoginRequest userLogin)
+        public async Task<string> LogIn(LoginRequest userLogin) // VERIFIED
         {
             try
             {
@@ -122,7 +113,7 @@ namespace MMCEventsV1.Repository.Repositories
 
                 if (userExist == null)
                 {
-                    return "User not found  ";
+                    return "User not found";
                 }
 
                 if (userExist.UserPassword == userLogin.UserPassword)
@@ -141,17 +132,7 @@ namespace MMCEventsV1.Repository.Repositories
                 return "An error occurred during login. Please try again later.";
             }
         }
-
-
-
-
-        public bool logout()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public async Task<bool> SaveAsync() //done
+        public async Task<bool> SaveAsync() //VERIFIED
         {
             try
             {
@@ -164,7 +145,7 @@ namespace MMCEventsV1.Repository.Repositories
                 return false;
             }
         }
-        public async Task<bool> UpdateUserAsync(UserInputModel UpdateUser) // done
+        public async Task<bool> UpdateUserAsync(UserInputModel UpdateUser) // VERIFIED
         {
             try
             {
@@ -195,7 +176,7 @@ namespace MMCEventsV1.Repository.Repositories
                 return false;
             }
         }
-        public async Task<bool> UserExistAsync(string? userEmail)//done
+        public async Task<bool> UserExistAsync(string? userEmail)//VERIFIED
         {
             try
             {
@@ -218,8 +199,7 @@ namespace MMCEventsV1.Repository.Repositories
                 return true;
             }
         }
-
-        public async Task<UserResponseModel> GetOneUser(int? UserID) //done
+        public async Task<UserResponseModel> GetOneUser(int? UserID) //VERIFIED
         {
             try
             {
