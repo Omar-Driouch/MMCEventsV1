@@ -1,6 +1,6 @@
-﻿namespace MMCEventsV1.DTO
+﻿namespace MMCEventsV1.DTO.User
 {
-    public class UserInputModel
+    public class UserResponseModel
     {
 
         public int? UserID { get; set; }
@@ -15,6 +15,6 @@
         public string? City { get; set; }
         public string? Gender { get; set; }
 
-       // public string ? UserStatus { get; set; }
+        public string? UserStatus { get; set; }
     }
 }

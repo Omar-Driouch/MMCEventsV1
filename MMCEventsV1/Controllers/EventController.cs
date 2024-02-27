@@ -70,12 +70,12 @@ namespace MMCEventsV1.Controllers
 
         // GET: api/Event/{eventId}
         [HttpGet("{EventID}")]
-        public async Task<ActionResult<EventInputModel>> GetEventById(int EventID)
+        public Task<ActionResult<EventInputModel>> GetEventById(int EventID)
         {
             var ev = _eventContext.Events.Find(EventID);
             if (ev == null)
             {
-                return NotFound();
+                return Task.FromResult<ActionResult<EventInputModel>>(NotFound());
             }
 
             EventInputModel eventResponseModel = new EventInputModel
@@ -90,7 +90,7 @@ namespace MMCEventsV1.Controllers
 
             };
 
-            return Ok(eventResponseModel);
+            return Task.FromResult<ActionResult<EventInputModel>>(Ok(eventResponseModel));
         }
 
         // POST: api/Event // Verified 

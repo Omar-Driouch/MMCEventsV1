@@ -1,4 +1,4 @@
-﻿namespace MMCEventsV1.DTO
+﻿namespace MMCEventsV1.DTO.User
 {
     public class AddUserModel
     {
@@ -10,6 +10,6 @@
         public string? Phone { get; set; }
         public string? City { get; set; }
 
-       // public string ? UserStatus { get; set; }
+        // public string ? UserStatus { get; set; }
     }
 }
