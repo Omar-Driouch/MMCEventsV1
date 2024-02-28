@@ -1,6 +1,6 @@
 ﻿using MMCEventsV1.Repository.Models;
 
-namespace MMCEventsV1.DTO
+namespace MMCEventsV1.DTO.Speaker
 {
     public class SpeakerResponseModel
     {
@@ -8,13 +8,10 @@ namespace MMCEventsV1.DTO
         public int? SpeakerID { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        
-
         public string? SpeakerEmail { get; set; }
         public string? Phone { get; set; }
         public string? City { get; set; }
         public string? Gender { get; set; }
-
         public string? Picture { get; set; }
         public bool? Mct { get; set; }
         public bool? Mvp { get; set; }

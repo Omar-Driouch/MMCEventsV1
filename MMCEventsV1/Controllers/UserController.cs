@@ -112,8 +112,8 @@ namespace MMCEventsV1.Controllers
 
         }
 
-        [HttpGet("Login")]
-        public async Task<ActionResult<string>> Login([FromQuery] LoginRequest userLogin)
+        [HttpPost("Login")]
+        public async Task<ActionResult<LoginResponse>> Login([FromQuery] LoginRequest userLogin)
         {
             try
             {

@@ -6,6 +6,7 @@ using ScaffoldConcept.TestModels;
 using User = MMCEventsV1.Repository.Models.User;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Numerics;
 
 namespace MMCEventsV1.Repository.Repositories
 {
@@ -13,11 +14,11 @@ namespace MMCEventsV1.Repository.Repositories
     {
         private readonly ILogger<UserRepository> _logger;
 
-        
+
 
         private readonly MMC_Event _Context;
         private string secretKey;
-        public UserRepository(MMC_Event context , ILogger<UserRepository> logger)
+        public UserRepository(MMC_Event context, ILogger<UserRepository> logger)
         {
             _Context = context;
             _logger = logger;
@@ -104,7 +105,7 @@ namespace MMCEventsV1.Repository.Repositories
 
 
         }
-        public async Task<string> LogIn(LoginRequest userLogin) // VERIFIED
+        public async Task<LoginResponse> LogIn(LoginRequest userLogin) // VERIFIED
         {
             try
             {
@@ -113,23 +114,35 @@ namespace MMCEventsV1.Repository.Repositories
 
                 if (userExist == null)
                 {
-                    return "User not found";
+                     
+                    return (null);
                 }
 
                 if (userExist.UserPassword == userLogin.UserPassword)
                 {
-                    return userExist.UserStatus;
+                    LoginResponse loginResponse = new()
+                    {
+                        UserID = userExist.UserId,
+                        FirstName = userExist.FirstName,
+                        LastName = userExist.LastName,
+                        City = userExist.City,
+                        Gender = userExist.Gender,
+                        UserStatus = userExist.UserStatus,
+                        Phone = userExist.Phone,
+
+                    };
+                    return (loginResponse);
                 }
                 else
                 {
-                    return "Password is incorrect";
+                    return null;
                 }
             }
             catch (Exception ex)
             {
                 // Log the exception for debugging purposes
                 _logger.LogError(ex, "An error occurred during login.");
-                return "An error occurred during login. Please try again later.";
+                return null;
             }
         }
         public async Task<bool> SaveAsync() //VERIFIED
@@ -233,6 +246,6 @@ namespace MMCEventsV1.Repository.Repositories
             }
         }
 
-         
+
     }
 }
