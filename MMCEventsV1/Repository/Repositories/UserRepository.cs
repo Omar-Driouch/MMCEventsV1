@@ -92,7 +92,8 @@ namespace MMCEventsV1.Repository.Repositories
                     return false;
                 }
 
-                //await _Context.Database.ExecuteSqlRawAsync("DELETE FROM SessionsParticipants WHERE USERID = {0}", UserID);
+                await _Context.Database.ExecuteSqlRawAsync("DELETE FROM Speakers WHERE SpeakerID = {0}", UserID);
+                await _Context.Database.ExecuteSqlRawAsync("DELETE FROM SessionsParticipants WHERE USERID = {0}", UserID);
                 _Context.Users.Remove(speakerToDelete);
                 var created = await SaveAsync();
 

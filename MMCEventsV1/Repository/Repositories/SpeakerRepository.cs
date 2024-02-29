@@ -40,12 +40,15 @@ namespace MMCEventsV1.Repository.Repositories
             try
             {
                 var speakerToDelete = await _Speaker.Speakers.FindAsync(SpeakerID);
-
+                var SocdialeMedia = await _Speaker.SocialMedia.FindAsync(SpeakerID);
                 if (speakerToDelete == null)
                 {
                     return false;
                 }
-
+                if (SocdialeMedia != null)
+                {
+                    _Speaker.SocialMedia.Remove(SocdialeMedia);
+                }
                 _Speaker.Speakers.Remove(speakerToDelete);
                var saved =  await _Speaker.SaveChangesAsync();
 
