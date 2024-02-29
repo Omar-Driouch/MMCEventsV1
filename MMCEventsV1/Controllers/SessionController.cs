@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MMCEventsV1.DTO;
+using MMCEventsV1.DTO.Session;
 using MMCEventsV1.Repository;
 using MMCEventsV1.Repository.Interfaces;
 using MMCEventsV1.Repository.Models;
@@ -23,7 +24,7 @@ namespace MMCEventsV1.Controllers
             _sessionsRepository = sessionsRepository;
         }
 
-        // VERIFIED 
+        //GET VERIFIED 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SessionResponseModel>>> Get()
         {
@@ -41,13 +42,13 @@ namespace MMCEventsV1.Controllers
 
         }
 
-        //VERIFIED
+        //POST VERIFIED
         [HttpPost("{EventID}")]
-        public async Task<ActionResult<string>> AddNewSession([FromBody] SessionInputModel sessionInputModel, int EventID)
+        public async Task<ActionResult<string>> AddNewSession([FromBody] SessionInputModel sessionInputModel)
         {
             try
             {
-                var isAdded = await _sessionsRepository.AddNewSession(sessionInputModel, EventID);
+                var isAdded = await _sessionsRepository.AddNewSession(sessionInputModel);
                 if (isAdded)
                 {
                     return Ok("The session has been added successfully");
@@ -64,7 +65,7 @@ namespace MMCEventsV1.Controllers
         }
 
 
-        //VERIFIED
+        //GET SESSION BY EVENT VERIFIED
         [HttpGet("{EventID}")]
         public async Task<ActionResult<IEnumerable<SessionResponseModel>>> GetSessionByEvent(int EventID)
         {
@@ -86,7 +87,7 @@ namespace MMCEventsV1.Controllers
             }
         }
 
-
+        //DELETE VERIFIED
         [HttpDelete("{SessionID}")]
         public async Task<IActionResult> DeleteSession(int SessionID)
         {
@@ -107,7 +108,29 @@ namespace MMCEventsV1.Controllers
             }
         }
 
+        //UPDATE VERIFIED
+        [HttpPut("{SessionID}")]
+        public async Task<IActionResult> UpdateSession([FromBody] SessionsUpdateModel sessionsUpdateModel)
+        {
+            try
+            {
+                var isUpdated = await _sessionsRepository.UpdateSession(sessionsUpdateModel);
+                if (isUpdated)
+                {
+                    return Ok("updated successfully");
+                }
+                else
+                {
+                    return BadRequest("Failed to update session");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error in the Updated Method failed to update session");
+            }
 
+
+        }
 
 
 

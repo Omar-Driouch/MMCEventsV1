@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MMCEventsV1.DTO;
+using MMCEventsV1.DTO.Session;
 using MMCEventsV1.Repository.Interfaces;
 using MMCEventsV1.Repository.Models;
 
 namespace MMCEventsV1.Repository.Repositories
 {
-    public class SessionsRepository: ISessionsRepository
+    public class SessionsRepository : ISessionsRepository
     {
         public readonly MMC_Event _Sessions;
         public SessionsRepository(MMC_Event context)
@@ -24,7 +25,7 @@ namespace MMCEventsV1.Repository.Repositories
 
                 if (sessions == null || !sessions.Any())
                 {
-                    return null; 
+                    return null;
                 }
 
                 var responseModels = sessions.Select(session => new SessionResponseModel
@@ -37,19 +38,19 @@ namespace MMCEventsV1.Repository.Repositories
                     Picture = session.Picture
                 }).ToList();
 
-                return (responseModels); 
+                return (responseModels);
             }
             catch (Exception ex)
             {
-                throw new Exception( "Internal server error: " + ex.Message); 
+                throw new Exception("Internal server error: " + ex.Message);
             }
         }
 
-        public async Task<bool> AddNewSession([FromBody] SessionInputModel sessionInputModel, int EventID) //DONE 
+        public async Task<bool> AddNewSession([FromBody] SessionInputModel sessionInputModel) //DONE 
         {
             try
             {
-                var findEvent = await _Sessions.Events.FindAsync(EventID);
+                var findEvent = await _Sessions.Events.FindAsync(sessionInputModel.EventID);
                 if (findEvent == null)
                 {
                     return false;
@@ -61,10 +62,10 @@ namespace MMCEventsV1.Repository.Repositories
                     Address = sessionInputModel.Address,
                     Picture = sessionInputModel.Picture,
                     Description = sessionInputModel.Description,
-                    EventId = EventID
+                    EventId = sessionInputModel.EventID
                 };
                 await _Sessions.Sessions.AddAsync(NewSession);
-             var saved =    await _Sessions.SaveChangesAsync();
+                var saved = await _Sessions.SaveChangesAsync();
                 return saved > 0;
             }
             catch (Exception ex)
@@ -72,7 +73,7 @@ namespace MMCEventsV1.Repository.Repositories
 
                 throw new Exception("An error occurred while adding a new session." + ex);
             }
-            
+
         }
 
         public async Task<ActionResult<IEnumerable<SessionResponseModel>>> GetSessionByEvent(int EventID) //DONE 
@@ -95,9 +96,9 @@ namespace MMCEventsV1.Repository.Repositories
                             Picture = item.Picture,
                             Description = item.Description
                         };
-                        allSessionsByEvent.Add(session); 
+                        allSessionsByEvent.Add(session);
                     }
-                    return (allSessionsByEvent); 
+                    return (allSessionsByEvent);
                 }
                 else
                 {
@@ -106,7 +107,7 @@ namespace MMCEventsV1.Repository.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception( "An error occurred while fetching sessions by event: " + ex.Message);
+                throw new Exception("An error occurred while fetching sessions by event: " + ex.Message);
             }
         }
 
@@ -134,7 +135,7 @@ namespace MMCEventsV1.Repository.Repositories
                 }
 
                 _Sessions.Remove(Deleted);
-               var saved =  await _Sessions.SaveChangesAsync();
+                var saved = await _Sessions.SaveChangesAsync();
                 return saved > 0;
 
             }
@@ -143,7 +144,36 @@ namespace MMCEventsV1.Repository.Repositories
 
                 throw new Exception("An error occurred while fetching sessions by event: " + ex.Message);
             }
-             
+
         }
+
+        public async Task<bool> UpdateSession(SessionsUpdateModel sessionsUpdateModel)
+        {
+            try
+            {
+                var sessionToUpdate = await _Sessions.Sessions.FindAsync(sessionsUpdateModel.SessionID);
+                if (sessionToUpdate != null)
+                {
+                    sessionToUpdate.Picture = sessionsUpdateModel.Picture;
+                    sessionToUpdate.Title = sessionsUpdateModel.Title;
+                    sessionToUpdate.Address = sessionsUpdateModel.Address;
+                    sessionToUpdate.DateSession = sessionsUpdateModel.DateSession;
+                    sessionToUpdate.Description = sessionsUpdateModel.Description;
+
+                    var saved = await _Sessions.SaveChangesAsync();
+                    return saved > 0;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error occurred while updating session: " + ex.Message);
+            }
+        }
+
     }
 }

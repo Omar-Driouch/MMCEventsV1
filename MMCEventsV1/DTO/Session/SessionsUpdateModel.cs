@@ -1,8 +1,8 @@
-﻿namespace MMCEventsV1.DTO
+﻿namespace MMCEventsV1.DTO.Session
 {
-    public class SessionInputModel
+    public class SessionsUpdateModel
     {
-        public int EventID { get; set; }
+        public int SessionID { get; set; }
         public string? Title { get; set; }
         public DateTime? DateSession { get; set; }
         public string? Description { get; set; }
