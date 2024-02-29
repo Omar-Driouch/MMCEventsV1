@@ -11,9 +11,9 @@ namespace MMCEventsV1.Repository.Interfaces
 
         Task<ActionResult<ICollection<SpeakerResponseModel>>> GetSpeakers();
         Task<bool> AddSpeaker([FromBody] SpeakerInputModel inputModel);
-        Task<IActionResult> UpdateSpeaker([FromBody] SpeakerInputModel inputModel);
-        Task<ActionResult<SpeakerResponseModel>> GetSpeakerByID(int SpeakerID);
-        Task<ActionResult<Speaker>> DeleteSpeaker(int SpeakerID);
+        Task<bool> UpdateSpeaker(SpeakerInputModel inputModel);
+        Task<SpeakerResponseModel> GetSpeakerByID(int SpeakerID);
+        Task<bool> DeleteSpeaker(int SpeakerID);
         Task<bool> SaveAsync();
 
 

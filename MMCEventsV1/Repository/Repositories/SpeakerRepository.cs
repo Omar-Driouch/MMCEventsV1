@@ -16,7 +16,7 @@ namespace MMCEventsV1.Repository.Repositories
         {
             _Speaker = speaker;
         }
-        public async Task<bool> AddSpeaker([FromBody] SpeakerInputModel inputModel)
+        public async Task<bool> AddSpeaker([FromBody] SpeakerInputModel inputModel) // VERIFEID
         {
             try
             {
@@ -35,16 +35,71 @@ namespace MMCEventsV1.Repository.Repositories
             }
         }
 
-
-
-        public Task<ActionResult<Speaker>> DeleteSpeaker(int SpeakerID)
+        public async Task<bool> DeleteSpeaker(int SpeakerID) //VERIFEID
         {
-            throw new NotImplementedException();
+            try
+            {
+                var speakerToDelete = await _Speaker.Speakers.FindAsync(SpeakerID);
+
+                if (speakerToDelete == null)
+                {
+                    return false;
+                }
+
+                _Speaker.Speakers.Remove(speakerToDelete);
+               var saved =  await _Speaker.SaveChangesAsync();
+
+                return saved > 0;
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Error while deleting speaker");
+            }
         }
 
-        public Task<ActionResult<SpeakerResponseModel>> GetSpeakerByID(int SpeakerID)
+        public async Task<SpeakerResponseModel> GetSpeakerByID(int SpeakerID) //VERIFEID
         {
-            throw new NotImplementedException();
+            try
+            {
+                var findSpeaker = await _Speaker.Speakers.FindAsync(SpeakerID);
+                if (findSpeaker != null)
+                {
+                    SpeakerResponseModel speakerResponseModel = new ();
+                    var socialMedia = await _Speaker.SocialMedia.FindAsync(SpeakerID);
+                    var SpeakerInfoFromUser = await _Speaker.Users.FirstOrDefaultAsync(sm => sm.UserId == SpeakerID);
+                    speakerResponseModel.SpeakerID = SpeakerID;
+                    //speaker information from the table users 
+                    speakerResponseModel.FirstName = SpeakerInfoFromUser.FirstName;
+                    speakerResponseModel.LastName = SpeakerInfoFromUser.LastName;
+                    speakerResponseModel.SpeakerEmail = SpeakerInfoFromUser.UserEmail;
+                    speakerResponseModel.Phone = SpeakerInfoFromUser.Phone;
+                    speakerResponseModel.City = SpeakerInfoFromUser.City;
+                    speakerResponseModel.Gender = SpeakerInfoFromUser.Gender;
+                    //speaker info from table speakers
+                    speakerResponseModel.Picture = findSpeaker?.Picture;
+                    speakerResponseModel.Mct = (bool)findSpeaker?.Mct;
+                    speakerResponseModel.Mvp = (bool)findSpeaker?.Mvp;
+                    speakerResponseModel.Biography = findSpeaker?.Biography;
+                    //speaker info from social media table 
+                    speakerResponseModel.Instagram = socialMedia?.Instagram;
+                    speakerResponseModel.Facebook = socialMedia?.Facebook;
+                    speakerResponseModel.Website = socialMedia?.Website;
+                    speakerResponseModel.LinkedIn = socialMedia?.LinkedIn;
+                    speakerResponseModel.Twitter = socialMedia?.Twitter;
+
+                    return speakerResponseModel;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<ActionResult<ICollection<SpeakerResponseModel>>> GetSpeakers() // VERIFIED
@@ -96,11 +151,51 @@ namespace MMCEventsV1.Repository.Repositories
             }
         }
 
-
-        public Task<IActionResult> UpdateSpeaker([FromBody] SpeakerInputModel inputModel)
+        public async Task<bool> UpdateSpeaker(SpeakerInputModel inputModel) //VERIFIED
         {
-            throw new NotImplementedException();
+            try
+            {
+                var speakerToUpdate =  _Speaker.Speakers.Find(inputModel.SpeakerID);
+                if (speakerToUpdate != null)
+                {
+                    _Speaker.Entry(speakerToUpdate).State = EntityState.Detached;
+                    var socialMedia = new SocialMedia
+                    {
+                        SpeakerId = inputModel.SpeakerID,
+                        Facebook = inputModel.Facebook,
+                        Instagram = inputModel.Instagram,
+                        Twitter = inputModel.Twitter,
+                        Website = inputModel.Website,
+                        LinkedIn = inputModel.LinkedIn
+                    };
+
+                    var updatedSpeaker = new Speaker
+                    {
+                        SpeakerId = inputModel.SpeakerID,
+                        Picture = inputModel.Picture,
+                        Mct = inputModel.MCT,
+                        Mvp = inputModel.MVP,
+                        Biography = inputModel.BioGraphy,
+                        SocialMedia = socialMedia
+                    };
+
+                    _ =  _Speaker.Speakers.Update(updatedSpeaker);
+                    var saved = await _Speaker.SaveChangesAsync();
+
+                    return saved > 0;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Error while updating speaker");
+            }
         }
+
 
         public async Task<bool> SaveAsync() //VERIFIED
         {
