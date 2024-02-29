@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MMCEventsV1.DTO;
 using MMCEventsV1.DTO.Session;
 
 namespace MMCEventsV1.Repository.Interfaces

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MMCEventsV1.DTO;
 using MMCEventsV1.DTO.Session;
 using MMCEventsV1.Repository.Interfaces;
 using MMCEventsV1.Repository.Models;

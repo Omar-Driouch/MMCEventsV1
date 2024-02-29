@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using MMCEventsV1.DTO;
 using MMCEventsV1.DTO.Session;
 using MMCEventsV1.Repository;
 using MMCEventsV1.Repository.Interfaces;
@@ -96,7 +95,7 @@ namespace MMCEventsV1.Controllers
                 var isDeleted =  await _sessionsRepository.DeleteSession(SessionID);
                 if (isDeleted)
                 {
-                    return Ok();
+                    return Ok("Session Deleted successfuly");
 
                 }
                 else { return BadRequest() ; }

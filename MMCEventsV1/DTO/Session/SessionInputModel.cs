@@ -1,4 +1,4 @@
-﻿namespace MMCEventsV1.DTO
+﻿namespace MMCEventsV1.DTO.Session
 {
     public class SessionInputModel
     {
