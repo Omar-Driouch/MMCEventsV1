@@ -86,5 +86,32 @@ namespace MMCEventsV1.Controllers
             }
         }
 
+
+        [HttpDelete("{SessionID}")]
+        public async Task<IActionResult> DeleteSession(int SessionID)
+        {
+            try
+            {
+                var isDeleted =  await _sessionsRepository.DeleteSession(SessionID);
+                if (isDeleted)
+                {
+                    return Ok();
+
+                }
+                else { return BadRequest() ; }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+
+
+
     }
+
+
 }

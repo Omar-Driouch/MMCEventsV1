@@ -75,7 +75,7 @@ namespace MMCEventsV1.Repository.Repositories
             
         }
 
-        public async Task<ActionResult<IEnumerable<SessionResponseModel>>> GetSessionByEvent(int EventID)
+        public async Task<ActionResult<IEnumerable<SessionResponseModel>>> GetSessionByEvent(int EventID) //DONE 
         {
             try
             {
@@ -110,5 +110,40 @@ namespace MMCEventsV1.Repository.Repositories
             }
         }
 
+
+        public async Task<bool> DeleteSession(int SessionID)
+        {
+            try
+            {
+                var Deleted = await _Sessions.Sessions.FindAsync(SessionID);
+                if (Deleted == null)
+                {
+                    return false;
+                }
+                var SupportSessionsToDelete = await _Sessions.SupportSessions.Where(es => es.SessionId == SessionID).ToListAsync();
+                if (SupportSessionsToDelete.Any())
+                {
+                    _Sessions.SupportSessions.RemoveRange(SupportSessionsToDelete);
+                    await _Sessions.SaveChangesAsync();
+                }
+                var SponsorSessionsToDelete = await _Sessions.SponsorSessions.Where(es => es.SessionId == SessionID).ToListAsync();
+                if (SponsorSessionsToDelete.Any())
+                {
+                    _Sessions.SponsorSessions.RemoveRange(SponsorSessionsToDelete);
+                    await _Sessions.SaveChangesAsync();
+                }
+
+                _Sessions.Remove(Deleted);
+               var saved =  await _Sessions.SaveChangesAsync();
+                return saved > 0;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("An error occurred while fetching sessions by event: " + ex.Message);
+            }
+             
+        }
     }
 }

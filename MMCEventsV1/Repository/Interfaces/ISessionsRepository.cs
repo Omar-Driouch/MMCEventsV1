@@ -8,6 +8,6 @@ namespace MMCEventsV1.Repository.Interfaces
         Task<ActionResult<IEnumerable<SessionResponseModel>>> GetSessions();
         Task<bool> AddNewSession([FromBody] SessionInputModel sessionInputModel, int EventID);
         Task<ActionResult<IEnumerable<SessionResponseModel>>> GetSessionByEvent(int EventID);
-
+        Task<bool> DeleteSession(int SessionID);
     }
 }
