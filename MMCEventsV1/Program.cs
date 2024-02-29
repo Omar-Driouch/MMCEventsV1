@@ -18,7 +18,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISpeakerRepository, SpeakerRepository>();
 builder.Services.AddScoped<IEventsRepository, EventsRepository>();
 builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
-
+builder.Services.AddScoped<IPartnerRepository, PartnerRepository>();
 
 
 
