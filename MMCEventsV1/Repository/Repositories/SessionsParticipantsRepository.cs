@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MMCEventsV1.DTO.SessionsParticipants;
 using MMCEventsV1.DTO.Speaker;
+using MMCEventsV1.DTO.User;
 using MMCEventsV1.Repository.Interfaces;
 using MMCEventsV1.Repository.Models;
 using System;
@@ -48,7 +49,7 @@ namespace MMCEventsV1.Repository.Repositories
             }
         }
 
-        public async Task<int> AddNewSessionsParticipants(SessionsParticipantsInputModel InputModel)
+        public async Task<bool> AddNewSessionsParticipants(SessionsParticipantsInputModel InputModel)
         {
             try
             {
@@ -59,12 +60,13 @@ namespace MMCEventsV1.Repository.Repositories
                 };
 
                 await _context.SessionsParticipants.AddAsync(sessionParticipant);
-                await _context.SaveChangesAsync();
+               var saved =  await _context.SaveChangesAsync();
 
-                return sessionParticipant.ParticipateId;
+                return saved > 0;
             }
             catch (Exception ex)
             {
+               
                 throw new Exception("Error occurred while adding a new session participant: " + ex.Message);
             }
         }
@@ -210,26 +212,37 @@ namespace MMCEventsV1.Repository.Repositories
             }
         }
 
-        public async Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>?> GetAllSessionsParticipantsByUser()
+        public async Task<ActionResult<IEnumerable<SessionParticipantsUsers>>?> GetAllSessionsParticipantsByUser(int SessionID)
         {
             try
             {
-                var sessionsParticipants = await _context.SessionsParticipants.ToListAsync();
+                var sessionsParticipants = await _context.SessionsParticipants
+                    .Where(sp => sp.SessionId == SessionID)
+                    .ToListAsync();
 
                 if (sessionsParticipants.Any())
                 {
-                    var result = sessionsParticipants.Select(item => new SessionsParticipantsResponseModel
-                    {
-                        SessionsParticipantsID = item.ParticipateId,
-                        SessionID = item.SessionId ?? 0,
-                        UserID = item.UserId ?? 0
-                    }).ToList();
+                    var userIds = sessionsParticipants.Select(sp => sp.UserId ?? 0).ToList();
 
-                    return result;
+                    var users = await _context.Users
+                        .Where(u => userIds.Contains(u.UserId) && u.UserStatus == "User")
+                        .Select(u => new SessionParticipantsUsers
+                        {
+                            UserID = u.UserId,
+                            FirstName = u.FirstName,
+                            LastName = u.LastName,
+                            UserEmail = u.UserEmail,
+                            Phone = u.Phone,
+                            City = u.City,
+                            Gender = u.Gender
+                        })
+                        .ToListAsync();
+
+                    return users;
                 }
                 else
                 {
-                    return new List<SessionsParticipantsResponseModel>();
+                    return null;
                 }
             }
             catch (Exception ex)
@@ -238,13 +251,13 @@ namespace MMCEventsV1.Repository.Repositories
             }
         }
         //DONE
-        public async Task<ActionResult<IEnumerable<SpeakerResponseModel>>?> GetAllSessionsParticipantsBySpeaker()
+        public async Task<ActionResult<IEnumerable<SpeakerResponseModel>>?> GetAllSessionsParticipantsBySpeaker(int SessionID)
         {
             try
             {
-                List<SpeakerResponseModel> speakers = new List<SpeakerResponseModel>();
+                List<SpeakerResponseModel> speakers = new ();
 
-                var sessionsParticipants = await _context.SessionsParticipants.Where(sp => sp.UserId != null).ToListAsync();
+                var sessionsParticipants = await _context.SessionsParticipants.Where(sp => sp.SessionId == SessionID).ToListAsync();
 
                 foreach (var session in sessionsParticipants)
                 {

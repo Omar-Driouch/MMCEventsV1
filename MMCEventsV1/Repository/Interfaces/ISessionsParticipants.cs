@@ -4,6 +4,7 @@ using MMCEventsV1.DTO.Partners;
 using MMCEventsV1.DTO.Session;
 using MMCEventsV1.DTO.SessionsParticipants;
 using MMCEventsV1.DTO.Speaker;
+using MMCEventsV1.DTO.User;
 using MMCEventsV1.Repository.Models;
 
 namespace MMCEventsV1.Repository.Interfaces
@@ -11,14 +12,14 @@ namespace MMCEventsV1.Repository.Interfaces
     public interface ISessionsParticipants
     {
         Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>?> GetAllSessionsParticipants();
-        Task<int> AddNewSessionsParticipants(SessionsParticipantsInputModel InputModel);
+        Task<bool> AddNewSessionsParticipants(SessionsParticipantsInputModel InputModel);
         Task<bool> UpdatedSessionsParticipants(SessionsParticipantsResponseModel InputModel);
         Task<bool> DeleteSessionsParticipantsByID(int SesionParicipantID);
         Task<bool> DeleteSessionsParticipantsByUser(int UserID);
         Task<bool> DeleteSessionsParticipantsBySession(int SessionID);
         Task<SessionsParticipantsResponseModel?> GetSessionsParticipantsBySession(int SessionID);
         Task<SessionsParticipantsResponseModel?> GetSessionsParticipantsByUser(int UserID);
-        Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>?> GetAllSessionsParticipantsByUser();
-        Task<ActionResult<IEnumerable<SpeakerResponseModel>>?> GetAllSessionsParticipantsBySpeaker();
+        Task<ActionResult<IEnumerable<SessionParticipantsUsers>>?> GetAllSessionsParticipantsByUser(int SessionID);
+        Task<ActionResult<IEnumerable<SpeakerResponseModel>>?> GetAllSessionsParticipantsBySpeaker(int SessionID);
     }
 }

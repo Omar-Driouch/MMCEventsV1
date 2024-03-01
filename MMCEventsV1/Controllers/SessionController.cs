@@ -125,7 +125,7 @@ namespace MMCEventsV1.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception("Error in the Updated Method failed to update session");
+                throw new Exception("Error in the Updated Method failed to update session "+ex);
             }
 
 

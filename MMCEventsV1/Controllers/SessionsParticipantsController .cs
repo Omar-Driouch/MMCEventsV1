@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MMCEventsV1.DTO.SessionsParticipants;
+using MMCEventsV1.DTO.User;
 using MMCEventsV1.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace MMCEventsV1.Controllers
             _sessionsParticipantsRepository = sessionsParticipantsRepository;
         }
 
+        // VERIFIED
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>> GetAllSessionsParticipants()
         {
@@ -38,20 +40,20 @@ namespace MMCEventsV1.Controllers
                 return StatusCode(500, "An error occurred while fetching session participants. " + ex.Message);
             }
         }
-
-        [HttpGet("SpeakersParticipants")]
-        public async Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>> GetAllSessionsParticipantsBySpeaker()
+        // VERIFIED
+        [HttpGet("Speakers/{SessionID}")]
+        public async Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>> GetAllSessionsParticipantsBySpeaker(int SessionID)
         {
             try
             {
-                var sessionParticipants = await _sessionsParticipantsRepository.GetAllSessionsParticipantsBySpeaker();
-                if (sessionParticipants != null)
+                var sessionParticipants = await _sessionsParticipantsRepository.GetAllSessionsParticipantsBySpeaker(SessionID);
+                if (sessionParticipants?.Value?.Count() > 0)
                 {
                     return Ok(sessionParticipants.Value);
                 }
                 else
                 {
-                    return NotFound("No session participants found.");
+                    return NotFound("No session speaker found.");
                 }
             }
             catch (Exception ex)
@@ -60,13 +62,22 @@ namespace MMCEventsV1.Controllers
             }
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> AddNewSessionsParticipants(SessionsParticipantsInputModel inputModel)
         {
             try
             {
-                int id = await _sessionsParticipantsRepository.AddNewSessionsParticipants(inputModel);
-                return Ok($"Session participant with ID {id} added successfully.");
+                var  isAdded = await _sessionsParticipantsRepository.AddNewSessionsParticipants(inputModel);
+                if (isAdded)
+                {
+                return Ok($"User with ID {inputModel.UserID} has been added to session {inputModel.SessionID}");
+
+                }else
+                {
+                    return BadRequest($"User is Already participated to this Session");
+                }
             }
             catch (Exception ex)
             {
@@ -117,19 +128,19 @@ namespace MMCEventsV1.Controllers
             }
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetSessionsParticipantsByUser(int userId)
+        [HttpGet("Sessions/{UserID}")]
+        public async Task<IActionResult> GetSessionsParticipantsByUser(int UserID)
         {
             try
             {
-                var sessionParticipant = await _sessionsParticipantsRepository.GetSessionsParticipantsByUser(userId);
+                var sessionParticipant = await _sessionsParticipantsRepository.GetSessionsParticipantsByUser(UserID);
                 if (sessionParticipant != null)
                 {
                     return Ok(sessionParticipant);
                 }
                 else
                 {
-                    return NotFound($"Session participant for user with ID {userId} not found.");
+                    return NotFound($"Session participant for user with ID {UserID} not found.");
                 }
             }
             catch (Exception ex)
@@ -138,6 +149,31 @@ namespace MMCEventsV1.Controllers
             }
         }
 
-        // Add other actions as per your requirements
+
+
+        // VERIFIED
+        [HttpGet("Users/{SessionID}")]
+        public async Task<ActionResult<IEnumerable<UserResponseModel>>?> GetAllSessionsParticipantsByUsers(int SessionID)
+        {
+            try
+            {
+                var sessionParticipants = await _sessionsParticipantsRepository.GetAllSessionsParticipantsByUser(SessionID);
+                if (sessionParticipants != null)
+                {
+                    return Ok(sessionParticipants.Value);
+                }
+                else
+                {
+                    return NotFound("No session participants found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching session participants. " + ex.Message);
+            }
+        }
+
+
+
     }
 }
