@@ -21,7 +21,7 @@ builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
 builder.Services.AddScoped<IPartnerRepository, PartnerRepository>();
 builder.Services.AddScoped<ISupportRepository, SupportRepository>();
 builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();
-
+builder.Services.AddScoped<ISessionsParticipants, SessionsParticipantsRepository>();
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 builder.Services.AddAuthentication(x =>
