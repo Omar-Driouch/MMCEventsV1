@@ -106,20 +106,20 @@ namespace MMCEventsV1.Controllers
                 return StatusCode(500, "An error occurred while updating session participant. " + ex.Message);
             }
         }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSessionsParticipantsByID(int id)
+        //DONE
+        [HttpDelete("Users/{SessionID}/{UserID}")]
+        public async Task<IActionResult> DeleteUserFromSessionByUserID(int SessionID, int UserID)
         {
             try
             {
-                var success = await _sessionsParticipantsRepository.DeleteSessionsParticipantsByID(id);
+                var success = await _sessionsParticipantsRepository.DeleteUserFromSessionByUserID(SessionID, UserID);
                 if (success)
                 {
-                    return Ok($"Session participant with ID {id} deleted successfully.");
+                    return Ok($"User participant with ID {UserID} deleted successfully from session SessionID.");
                 }
                 else
                 {
-                    return NotFound($"Session participant with ID {id} not found.");
+                    return NotFound($"User participant with ID {UserID} not found.");
                 }
             }
             catch (Exception ex)
@@ -128,43 +128,46 @@ namespace MMCEventsV1.Controllers
             }
         }
 
-        [HttpGet("Sessions/{UserID}")]
-        public async Task<IActionResult> GetSessionsParticipantsByUser(int UserID)
+
+
+        //DONE
+        [HttpDelete("Users/{SessionID}")]
+        public async Task<IActionResult> DeleteAllUserFromSessionByUserID(int SessionID)
         {
             try
             {
-                var sessionParticipant = await _sessionsParticipantsRepository.GetSessionsParticipantsByUser(UserID);
-                if (sessionParticipant != null)
+                var success = await _sessionsParticipantsRepository.DeleteAllUserFromSessionByUserID(SessionID);
+                if (success)
                 {
-                    return Ok(sessionParticipant);
+                    return Ok($"Session with ID {SessionID} deleted successfully from session Particpipated.");
                 }
                 else
                 {
-                    return NotFound($"Session participant for user with ID {UserID} not found.");
+                    return NotFound($"Session  with ID {SessionID} not found.");
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while fetching session participant by user. " + ex.Message);
+                return StatusCode(500, "An error occurred while deleting session participant by ID. " + ex.Message);
             }
         }
 
+ 
 
-
-        // VERIFIED
+        //DONE
         [HttpGet("Users/{SessionID}")]
         public async Task<ActionResult<IEnumerable<UserResponseModel>>?> GetAllSessionsParticipantsByUsers(int SessionID)
         {
             try
             {
                 var sessionParticipants = await _sessionsParticipantsRepository.GetAllSessionsParticipantsByUser(SessionID);
-                if (sessionParticipants != null)
+                if (sessionParticipants?.Value != null)
                 {
                     return Ok(sessionParticipants.Value);
                 }
                 else
                 {
-                    return NotFound("No session participants found.");
+                    return NotFound("No users found in this Session.");
                 }
             }
             catch (Exception ex)

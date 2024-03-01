@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MMCEventsV1.DTO.Session;
 using MMCEventsV1.DTO.SessionsParticipants;
 using MMCEventsV1.DTO.Speaker;
 using MMCEventsV1.DTO.User;
@@ -20,7 +21,7 @@ namespace MMCEventsV1.Repository.Repositories
         {
             _context = context;
         }
-
+        //DONE
         public async Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>?> GetAllSessionsParticipants()
         {
             try
@@ -48,7 +49,7 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception("Something went wrong while fetching session participants: " + ex.Message);
             }
         }
-
+        //DONE
         public async Task<bool> AddNewSessionsParticipants(SessionsParticipantsInputModel InputModel)
         {
             try
@@ -70,7 +71,7 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception("Error occurred while adding a new session participant: " + ex.Message);
             }
         }
-
+        //DONE
         public async Task<bool> UpdatedSessionsParticipants(SessionsParticipantsResponseModel InputModel)
         {
             try
@@ -95,15 +96,15 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception("Error occurred while updating the session participant: " + ex.Message);
             }
         }
-
-        public async Task<bool> DeleteSessionsParticipantsByID(int SesionParicipantID)
+        //DONE
+        public async Task<bool> DeleteUserFromSessionByUserID(int SessionID, int UserID)
         {
             try
             {
-                var sessionParticipant = await _context.SessionsParticipants.FindAsync(SesionParicipantID);
-                if (sessionParticipant != null)
+                var sessionParticipant = await _context.SessionsParticipants.Where(Sp=>Sp.UserId == UserID && Sp.SessionId == SessionID).ToListAsync();
+                if (sessionParticipant.Any())
                 {
-                    _context.SessionsParticipants.Remove(sessionParticipant);
+                   _context.SessionsParticipants.RemoveRange(sessionParticipant);
                     var deleted = await _context.SaveChangesAsync();
                     return deleted > 0;
                 }
@@ -139,8 +140,8 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception("Error occurred while deleting the session participant by user: " + ex.Message);
             }
         }
-
-        public async Task<bool> DeleteSessionsParticipantsBySession(int SessionID)
+        //DONE
+        public async Task<bool> DeleteAllUserFromSessionByUserID(int SessionID)
         {
             try
             {
@@ -161,32 +162,7 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception("Error occurred while deleting the session participant by session: " + ex.Message);
             }
         }
-
-        public async Task<SessionsParticipantsResponseModel?> GetSessionsParticipantsBySession(int SessionID)
-        {
-            try
-            {
-                var sessionParticipant = await _context.SessionsParticipants.FirstOrDefaultAsync(sp => sp.SessionId == SessionID);
-                if (sessionParticipant != null)
-                {
-                    return new SessionsParticipantsResponseModel
-                    {
-                        SessionsParticipantsID = sessionParticipant.ParticipateId,
-                        SessionID = sessionParticipant.SessionId ?? 0,
-                        UserID = sessionParticipant.UserId ?? 0
-                    };
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error occurred while fetching session participant by session: " + ex.Message);
-            }
-        }
-
+  
         public async Task<SessionsParticipantsResponseModel?> GetSessionsParticipantsByUser(int UserID)
         {
             try
@@ -211,7 +187,7 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception("Error occurred while fetching session participant by user: " + ex.Message);
             }
         }
-
+        //done
         public async Task<ActionResult<IEnumerable<SessionParticipantsUsers>>?> GetAllSessionsParticipantsByUser(int SessionID)
         {
             try

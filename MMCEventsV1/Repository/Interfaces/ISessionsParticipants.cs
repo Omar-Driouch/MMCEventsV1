@@ -14,10 +14,9 @@ namespace MMCEventsV1.Repository.Interfaces
         Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>?> GetAllSessionsParticipants();
         Task<bool> AddNewSessionsParticipants(SessionsParticipantsInputModel InputModel);
         Task<bool> UpdatedSessionsParticipants(SessionsParticipantsResponseModel InputModel);
-        Task<bool> DeleteSessionsParticipantsByID(int SesionParicipantID);
+        Task<bool> DeleteUserFromSessionByUserID(int SessionID, int UserID);
         Task<bool> DeleteSessionsParticipantsByUser(int UserID);
-        Task<bool> DeleteSessionsParticipantsBySession(int SessionID);
-        Task<SessionsParticipantsResponseModel?> GetSessionsParticipantsBySession(int SessionID);
+        Task<bool> DeleteAllUserFromSessionByUserID(int SessionID);
         Task<SessionsParticipantsResponseModel?> GetSessionsParticipantsByUser(int UserID);
         Task<ActionResult<IEnumerable<SessionParticipantsUsers>>?> GetAllSessionsParticipantsByUser(int SessionID);
         Task<ActionResult<IEnumerable<SpeakerResponseModel>>?> GetAllSessionsParticipantsBySpeaker(int SessionID);
