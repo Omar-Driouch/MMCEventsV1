@@ -47,26 +47,7 @@ namespace MMCEventsV1.Controllers
 
 
 
-        //[HttpGet("Speakers/{SessionID}")]
-        //public async Task<ActionResult<IEnumerable<SessionsParticipantsResponseModel>>> GetAllSessionsParticipantsBySpeaker(int SessionID)
-        //{
-        //    try
-        //    {
-        //        var sessionParticipants = await _sessionsParticipantsRepository.GetAllSessionsParticipantsBySpeaker(SessionID);
-        //        if (sessionParticipants?.Value?.Count() > 0)
-        //        {
-        //            return Ok(sessionParticipants.Value);
-        //        }
-        //        else
-        //        {
-        //            return NotFound("No session speaker found.");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, "An error occurred while fetching session participants. " + ex.Message);
-        //    }
-        //}
+        
 
 
         //DONE

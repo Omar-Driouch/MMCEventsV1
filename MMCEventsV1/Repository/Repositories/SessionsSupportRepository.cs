@@ -116,7 +116,7 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception("Error occurred while deleting the SessionSupports by ID: " + ex.Message);
             }
         }
- 
+        //DONE
 
         public async Task<bool> DeleteSessionSupportsBySupportID(int SupportID)
         {
@@ -139,7 +139,7 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception("Error occurred while deleting the SessionSupports by ID: " + ex.Message);
             }
         }
-
+        //DONE
         public async Task<ActionResult<IEnumerable<SupportSessionResponseModel>>?> GetAllSessionSupportsBySupportID(int SupportID)
         {
             try
@@ -170,7 +170,7 @@ namespace MMCEventsV1.Repository.Repositories
                 throw new Exception( "An error occurred while fetching session supports by SupportID: " + ex.Message);
             }
         }
-
+        //DONE
         public async Task<ActionResult<IEnumerable<SupportSessionResponseModel>>?> GetAllSessionSupportsBySessionID(int SessionID)
         {
             try
@@ -204,82 +204,6 @@ namespace MMCEventsV1.Repository.Repositories
 
 
 
-
-        //public async Task<SessionsParticipantsResponseModel?> GetSessionsParticipantsByUser(int UserID)
-        //{
-        //    try
-        //    {
-        //        var sessionParticipant = await _context.SessionsParticipants.FirstOrDefaultAsync(sp => sp.UserId == UserID);
-        //        if (sessionParticipant != null)
-        //        {
-        //            return new SessionsParticipantsResponseModel
-        //            {
-        //                SessionsParticipantsID = sessionParticipant.ParticipateId,
-        //                SessionID = sessionParticipant.SessionId ?? 0,
-        //                UserID = sessionParticipant.UserId ?? 0
-        //            };
-        //        }
-        //        else
-        //        {
-        //            return null;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error occurred while fetching session participant by user: " + ex.Message);
-        //    }
-        //}
-
-        ////DONE
-        //public async Task<ActionResult<IEnumerable<SpeakerResponseModel>>?> GetAllSessionsParticipantsBySpeaker(int SessionID)
-        //{
-        //    try
-        //    {
-        //        List<SpeakerResponseModel> speakers = new ();
-
-        //        var sessionsParticipants = await _context.SessionsParticipants.Where(sp => sp.SessionId == SessionID).ToListAsync();
-
-        //        foreach (var session in sessionsParticipants)
-        //        {
-        //            var user = await _context.Users.FindAsync(session.UserId);
-        //            if (user != null)
-        //            {
-        //                var speaker = await _context.Speakers.FindAsync(user.UserId);
-        //                if (speaker != null)
-        //                {
-        //                    var socialMedia = await _context.SocialMedia.FindAsync(speaker.SpeakerId);
-
-        //                    SpeakerResponseModel speakerResponseModel = new SpeakerResponseModel
-        //                    {
-        //                        SpeakerID = speaker.SpeakerId,
-        //                        FirstName = user.FirstName,
-        //                        LastName = user.LastName,
-        //                        SpeakerEmail = user.UserEmail,
-        //                        Phone = user.Phone,
-        //                        City = user.City,
-        //                        Gender = user.Gender,
-        //                        Picture = speaker.Picture,
-        //                        Mct = speaker.Mct,
-        //                        Mvp = speaker.Mvp,
-        //                        Biography = speaker.Biography,
-        //                        Facebook = socialMedia?.Facebook,
-        //                        Instagram = socialMedia?.Instagram,
-        //                        LinkedIn = socialMedia?.LinkedIn,
-        //                        Twitter = socialMedia?.Twitter,
-        //                        Website = socialMedia?.Website
-        //                    };
-
-        //                    speakers.Add(speakerResponseModel);
-        //                }
-        //            }
-        //        }
-
-        //        return speakers;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Something went wrong while fetching session participants by speaker: " + ex.Message);
-        //    }
-        //}
+ 
     }
 }
