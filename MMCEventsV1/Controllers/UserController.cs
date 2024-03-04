@@ -30,6 +30,7 @@ namespace MMCEventsV1.Controllers
         }
 
         //Get All  Users Method ==>> VERIFIED
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<UserResponseModel>))] 
         public IActionResult GetUsers()
@@ -51,6 +52,7 @@ namespace MMCEventsV1.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
+        
         public async Task<IActionResult> CreateUserAsync(AddUserModel userCreate) 
         {
             var isUserExist = await _userRepository.UserExistAsync(userCreate.UserEmail);
@@ -111,7 +113,7 @@ namespace MMCEventsV1.Controllers
             { return BadRequest("An error occured "); }
 
         }
-
+        //DONE
         [HttpPost("Login")]
         public async Task<ActionResult<LoginResponse>> Login([FromQuery] LoginRequest userLogin)
         {

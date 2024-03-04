@@ -7,6 +7,10 @@ using User = MMCEventsV1.Repository.Models.User;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace MMCEventsV1.Repository.Repositories
 {
@@ -17,12 +21,12 @@ namespace MMCEventsV1.Repository.Repositories
 
 
         private readonly MMC_Event _Context;
-        private string secretKey;
-        public UserRepository(MMC_Event context, ILogger<UserRepository> logger)
+        private string? secretKey;
+        public UserRepository(MMC_Event context, ILogger<UserRepository> logger, IConfiguration configuration)
         {
             _Context = context;
             _logger = logger;
-            // secretKey = configuration.GetValue<string>("ApiSettings:Secret");
+            secretKey = configuration.GetValue<string>("ApiSettings:Secret");
         }
         public ICollection<UserResponseModel> GetUsers()// VERIFIED
         {
@@ -115,12 +119,48 @@ namespace MMCEventsV1.Repository.Repositories
 
                 if (userExist == null)
                 {
-                     
+
                     return (null);
                 }
 
                 if (userExist.UserPassword == userLogin.UserPassword)
                 {
+                    var keyGenerator = new System.Security.Cryptography.RNGCryptoServiceProvider();
+                    var key = new byte[48]; // 48 bytes = 384 bits
+                    keyGenerator.GetBytes(key);
+
+                    var tokenDiscriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = new ClaimsIdentity(new Claim[]{
+                        new Claim(ClaimTypes.Email, userExist.UserEmail),
+                        new Claim(ClaimTypes.Role,userExist.UserStatus),
+                    }),
+                        Expires = DateTime.UtcNow.AddDays(7),
+                        SigningCredentials = new SigningCredentials(
+                        new SymmetricSecurityKey(key),
+                        SecurityAlgorithms.HmacSha384Signature
+                    )
+                    };
+
+
+
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    //var key = Encoding.ASCII.GetBytes(secretKey);
+
+                    //var tokenDiscriptor = new SecurityTokenDescriptor
+                    //{
+                    //    Subject = new ClaimsIdentity(new Claim[]{
+
+                    //new Claim(ClaimTypes.Email, userExist.UserEmail),
+                    //new Claim(ClaimTypes.Role,userExist.UserStatus),
+
+                    //}),
+                    //    Expires = DateTime.UtcNow.AddDays(7),
+                    //    SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha384Signature)
+                    //};
+                    var token = tokenHandler.CreateToken(tokenDiscriptor);
+
+
                     LoginResponse loginResponse = new()
                     {
                         UserID = userExist.UserId,
@@ -130,6 +170,7 @@ namespace MMCEventsV1.Repository.Repositories
                         Gender = userExist.Gender,
                         UserStatus = userExist.UserStatus,
                         Phone = userExist.Phone,
+                        Token = tokenHandler.WriteToken(token),
 
                     };
                     return (loginResponse);
