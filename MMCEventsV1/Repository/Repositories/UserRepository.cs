@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace MMCEventsV1.Repository.Repositories
 {
@@ -26,6 +27,7 @@ namespace MMCEventsV1.Repository.Repositories
         {
             _Context = context;
             _logger = logger;
+
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
         }
         public ICollection<UserResponseModel> GetUsers()// VERIFIED
@@ -125,42 +127,30 @@ namespace MMCEventsV1.Repository.Repositories
 
                 if (userExist.UserPassword == userLogin.UserPassword)
                 {
-                    var keyGenerator = new System.Security.Cryptography.RNGCryptoServiceProvider();
-                    var key = new byte[48]; // 48 bytes = 384 bits
-                    keyGenerator.GetBytes(key);
+ 
+                    var key = new byte[48]; 
+                    using (var sha348 = SHA384.Create())
+                    {
+                        var hashedBytes = sha348.ComputeHash(Encoding.UTF8.GetBytes(secretKey));
+                        Array.Copy(hashedBytes, key, Math.Min(key.Length, hashedBytes.Length));
+                    }
 
                     var tokenDiscriptor = new SecurityTokenDescriptor
                     {
                         Subject = new ClaimsIdentity(new Claim[]{
-                        new Claim(ClaimTypes.Email, userExist.UserEmail),
-                        new Claim(ClaimTypes.Role,userExist.UserStatus),
+                        new(ClaimTypes.Email, userExist.UserEmail),
+                        new(ClaimTypes.Role, userExist.UserStatus),
                     }),
                         Expires = DateTime.UtcNow.AddDays(7),
                         SigningCredentials = new SigningCredentials(
-                        new SymmetricSecurityKey(key),
-                        SecurityAlgorithms.HmacSha384Signature
-                    )
+                            new SymmetricSecurityKey(key),
+                            SecurityAlgorithms.HmacSha384Signature
+                        )
                     };
 
-
-
                     var tokenHandler = new JwtSecurityTokenHandler();
-                    //var key = Encoding.ASCII.GetBytes(secretKey);
-
-                    //var tokenDiscriptor = new SecurityTokenDescriptor
-                    //{
-                    //    Subject = new ClaimsIdentity(new Claim[]{
-
-                    //new Claim(ClaimTypes.Email, userExist.UserEmail),
-                    //new Claim(ClaimTypes.Role,userExist.UserStatus),
-
-                    //}),
-                    //    Expires = DateTime.UtcNow.AddDays(7),
-                    //    SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha384Signature)
-                    //};
                     var token = tokenHandler.CreateToken(tokenDiscriptor);
-
-
+ 
                     LoginResponse loginResponse = new()
                     {
                         UserID = userExist.UserId,
@@ -182,7 +172,7 @@ namespace MMCEventsV1.Repository.Repositories
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging purposes
+                 
                 _logger.LogError(ex, "An error occurred during login.");
                 return null;
             }

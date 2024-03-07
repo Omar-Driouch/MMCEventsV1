@@ -30,9 +30,9 @@ namespace MMCEventsV1.Controllers
         }
 
         //Get All  Users Method ==>> VERIFIED
-        [Authorize(Roles = "Admin")]
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<UserResponseModel>))] 
+        [ProducesResponseType(200, Type = typeof(IEnumerable<UserResponseModel>))]
+        [Authorize(Roles = "admin")]
         public IActionResult GetUsers()
         {
             var users = _userRepository.GetUsers();
@@ -52,7 +52,7 @@ namespace MMCEventsV1.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUserAsync(AddUserModel userCreate) 
         {
             var isUserExist = await _userRepository.UserExistAsync(userCreate.UserEmail);
@@ -77,6 +77,7 @@ namespace MMCEventsV1.Controllers
         [HttpPut("{UserID}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateUserAsync(UserInputModel NewUser)
         {
             var check = await _userRepository.UpdateUserAsync(NewUser);
@@ -91,6 +92,7 @@ namespace MMCEventsV1.Controllers
         [HttpGet("{UserID}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<UserResponseModel>> GetOneUser(int UserID)
         {
             var user = await _userRepository.GetOneUser(UserID);
@@ -102,6 +104,7 @@ namespace MMCEventsV1.Controllers
         // DELETE Users Method ==>> Verified 
         [HttpDelete("{UserID}")]
         [ProducesResponseType(200)]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUserAsycn(int UserID)
         {
             var check = await _userRepository.DeleteUserAsycn(UserID);
@@ -115,7 +118,7 @@ namespace MMCEventsV1.Controllers
         }
         //DONE
         [HttpPost("Login")]
-        public async Task<ActionResult<LoginResponse>> Login([FromQuery] LoginRequest userLogin)
+        public async Task<ActionResult<LoginResponse>> Login(LoginRequest userLogin)
         {
             try
             {
